@@ -93,13 +93,33 @@ public class PayRoll {
 			e.printStackTrace();
 			connection.rollback();
 		}
-		
-	}
 
+	}
+	public static void countAllDataUsingPreparedStatemnt() throws SQLException {
+		String select = "select gender, count(basicPay) as total_count from employee_payroll where gender='F' group by gender;";
+		System.out.println(select);
+		Connection connection = null;
+		try {
+			connection = getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement statement = connection.prepareStatement(select);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				String gender = resultSet.getString("gender");
+				String basicPay = resultSet.getString("total_count");
+				System.out.println("Data: " + gender+","+basicPay);
+			}
+			connection.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			connection.rollback();
+		}
+	}
 	public static void main(String[] args) throws SQLException {
 		connectToMysql();
 		getAllDataUsingPreparedStatemnt();
 		updateDataUsingPreparedStatement("8000",3);
 		retrieveAllDataUsingPreparedStatemnt();
+		countAllDataUsingPreparedStatemnt();
 	}	
 }
