@@ -32,84 +32,30 @@ public class PayRoll {
 				"Bhavesh@8448");
 		return connection;
 	}
-	public static void getAllDataUsingPreparedStatemnt() throws SQLException {
-		String select = "SELECT * FROM employee_payroll";
-		System.out.println(select);
+	public static void addDataUsingPreparedStatement(int id,String name,int phone_number,String address,String department,String gender,int basicPay,int deductions,int taxablePay,int incomeTax,int netpay,String start ) throws SQLException {
+		String insert = "INSERT INTO employeepayroll('id','name','phone_number','address','department','gender','basicPay','deductions','taxablePay','incomeTax','netPay','start') values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		System.out.println(insert);
 		Connection connection = null;
 		try {
 			connection = getConnection();
 			connection.setAutoCommit(false);
-			PreparedStatement statement = connection.prepareStatement(select);
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				String name = resultSet.getString("name");			
-				String salary = resultSet.getString("basicPay");
-
-				System.out.println("Data: "+ name + ", " + salary);
-			}
-			connection.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-			connection.rollback();
-		}
-	}
-	public static void updateDataUsingPreparedStatement(String basicPay, int id) throws SQLException {
-		System.out.println("\nUpdated Employee salary");
-		String update = "UPDATE employee_payroll SET basicPay=? where id=?";
-		System.out.println(update);
-		Connection connection = null;
-		try {
-			connection = getConnection();
-			connection.setAutoCommit(false);
-			PreparedStatement statement = connection.prepareStatement(update);
-			statement.setString(1,basicPay);
-			statement.setInt(2,id);
+			PreparedStatement statement = connection.prepareStatement(insert);
+			statement.setLong(1,id);
+			statement.setString(2,name);
+			statement.setLong(3,phone_number);
+			statement.setString(4,address);
+			statement.setString(5,department);
+			statement.setString(6,gender);
+			statement.setLong(7,basicPay);
+			statement.setLong(8,deductions);
+			statement.setLong(9,taxablePay);
+			statement.setLong(10,incomeTax);
+			statement.setLong(11,netpay);
+			statement.setString(12,start);
 			int rowEffected = statement.executeUpdate();
-			System.out.println(rowEffected + " record updated");
+			System.out.println(rowEffected + " records inserted");
 			connection.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-			connection.rollback();
-		}
-	}
-	public static void retrieveAllDataUsingPreparedStatemnt() throws SQLException {
-		System.out.println("\nRetrieve data who have joined in particular date range");
-		String select = "select * from employee_payroll where start between cast('2021-01-01' as date) and date (now());";
-		System.out.println(select);
-		Connection connection = null;
-		try {
-			connection = getConnection();
-			connection.setAutoCommit(false);
-			PreparedStatement statement = connection.prepareStatement(select);
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				String name = resultSet.getString("name");			
-				String start = resultSet.getString("start");
-
-				System.out.println("Data: "+ name + ", " + start);
-			}
-			connection.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-			connection.rollback();
-		}
-
-	}
-	public static void countAllDataUsingPreparedStatemnt() throws SQLException {
-		String select = "select gender, count(basicPay) as total_count from employee_payroll where gender='F' group by gender;";
-		System.out.println(select);
-		Connection connection = null;
-		try {
-			connection = getConnection();
-			connection.setAutoCommit(false);
-			PreparedStatement statement = connection.prepareStatement(select);
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				String gender = resultSet.getString("gender");
-				String basicPay = resultSet.getString("total_count");
-				System.out.println("Data: " + gender+","+basicPay);
-			}
-			connection.commit();
+			System.out.println("Transaction is commited.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			connection.rollback();
@@ -117,9 +63,7 @@ public class PayRoll {
 	}
 	public static void main(String[] args) throws SQLException {
 		connectToMysql();
-		getAllDataUsingPreparedStatemnt();
-		updateDataUsingPreparedStatement("8000",3);
-		retrieveAllDataUsingPreparedStatemnt();
-		countAllDataUsingPreparedStatemnt();
-	}	
+		// prepared statement
+		addDataUsingPreparedStatement(5,"Yogesh", 999745816, "wagholi","quality","M",20000, 1500,1000,800,500, "2020-05-05");
+	}
 }
