@@ -72,10 +72,34 @@ public class PayRoll {
 			connection.rollback();
 		}
 	}
+	public static void retrieveAllDataUsingPreparedStatemnt() throws SQLException {
+		System.out.println("\nRetrieve data who have joined in particular date range");
+		String select = "select * from employee_payroll where start between cast('2021-01-01' as date) and date (now());";
+		System.out.println(select);
+		Connection connection = null;
+		try {
+			connection = getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement statement = connection.prepareStatement(select);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				String name = resultSet.getString("name");			
+				String start = resultSet.getString("start");
+
+				System.out.println("Data: "+ name + ", " + start);
+			}
+			connection.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			connection.rollback();
+		}
+		
+	}
 
 	public static void main(String[] args) throws SQLException {
 		connectToMysql();
 		getAllDataUsingPreparedStatemnt();
 		updateDataUsingPreparedStatement("8000",3);
+		retrieveAllDataUsingPreparedStatemnt();
 	}	
 }
