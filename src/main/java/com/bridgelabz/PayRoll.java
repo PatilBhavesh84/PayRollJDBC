@@ -45,7 +45,7 @@ public class PayRoll {
 				String name = resultSet.getString("name");			
 				String salary = resultSet.getString("basicPay");
 
-				System.out.println("reading data : "+ name + ", " + salary);
+				System.out.println("Data: "+ name + ", " + salary);
 			}
 			connection.commit();
 		} catch (Exception e) {
@@ -53,8 +53,29 @@ public class PayRoll {
 			connection.rollback();
 		}
 	}
+	public static void updateDataUsingPreparedStatement(String basicPay, int id) throws SQLException {
+		System.out.println("\nUpdated Employee salary");
+		String update = "UPDATE employee_payroll SET basicPay=? where id=?";
+		System.out.println(update);
+		Connection connection = null;
+		try {
+			connection = getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement statement = connection.prepareStatement(update);
+			statement.setString(1,basicPay);
+			statement.setInt(2,id);
+			int rowEffected = statement.executeUpdate();
+			System.out.println(rowEffected + " record updated");
+			connection.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			connection.rollback();
+		}
+	}
+
 	public static void main(String[] args) throws SQLException {
 		connectToMysql();
 		getAllDataUsingPreparedStatemnt();
+		updateDataUsingPreparedStatement("8000",3);
 	}	
 }
